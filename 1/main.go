@@ -74,36 +74,28 @@ func two() {
 		dir := string(line[0])
 		shift, _ := strconv.Atoi(line[1:])
 
-		fullRotations := shift / 100
-		shift %= 100
+		for shift > 0 {
+			if dir == "L" {
+				dial -= 1
+			} else {
+				dial += 1
+			}
 
-		if dir == "R" {
-			dial += shift
-		} else {
-			dial -= shift
-		}
+			if dial == -1 {
+				dial = 99
+			}
 
-		if dial > 99 {
-			dial = dial % 100
-			if dial != 0 {
+			if dial == 100 {
+				dial = 0
+			}
+
+			if dial == 0 {
 				password++
 			}
-		} else if dial < 0 {
-			dial = 100 + dial
-			if dial != 0 {
-				password++
-			}
+			
+			shift -= 1
 		}
 
-		//log.Printf("Rotating %s %d --> %d", dir, shift, dial)
-
-		if dial == 0 {
-			password++
-		}
-
-		password += fullRotations
-
-		//log.Println()
 	}
 	if err := scanner.Err(); err != nil {
 		log.Printf("Error scanning file line: %s", err.Error())
