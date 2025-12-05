@@ -54,6 +54,64 @@ func one() {
 	log.Printf("Password: %d", password)
 }
 
+func two() {
+	file, err := os.Open("./day1-input.txt")
+	if err != nil {
+		log.Fatal("Could not open input file!")
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+
+	dial := 50
+	password := 0
+
+	for scanner.Scan() {
+		line := scanner.Text()
+
+		//log.Printf("Starting at: %d", dial)
+
+		dir := string(line[0])
+		shift, _ := strconv.Atoi(line[1:])
+
+		fullRotations := shift / 100
+		shift %= 100
+
+		if dir == "R" {
+			dial += shift
+		} else {
+			dial -= shift
+		}
+
+		if dial > 99 {
+			dial = dial % 100
+			if dial != 0 {
+				password++
+			}
+		} else if dial < 0 {
+			dial = 100 + dial
+			if dial != 0 {
+				password++
+			}
+		}
+
+		//log.Printf("Rotating %s %d --> %d", dir, shift, dial)
+
+		if dial == 0 {
+			password++
+		}
+
+		password += fullRotations
+
+		//log.Println()
+	}
+	if err := scanner.Err(); err != nil {
+		log.Printf("Error scanning file line: %s", err.Error())
+	}
+
+	log.Printf("Password: %d", password)
+}
+
 
 func main() {
 	if len(os.Args) < 2 {
@@ -63,6 +121,8 @@ func main() {
 	switch os.Args[1] {
 	case "one":
 		one()
+	case "two":
+		two()
 	}
 
 }
