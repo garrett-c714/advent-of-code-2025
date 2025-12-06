@@ -1,4 +1,4 @@
-package main
+package one
 
 import (
 	"bufio"
@@ -7,8 +7,8 @@ import (
 	"strconv"
 )
 
-func one() {
-	file, err := os.Open("./day1-input.txt")
+func One() {
+	file, err := os.Open("./one/day1-input.txt")
 	if err != nil {
 		log.Fatal("Could not open input file!")
 	}
@@ -54,8 +54,8 @@ func one() {
 	log.Printf("Password: %d", password)
 }
 
-func two() {
-	file, err := os.Open("./day1-input.txt")
+func Two() {
+	file, err := os.Open("./one/day1-input.txt")
 	if err != nil {
 		log.Fatal("Could not open input file!")
 	}
@@ -104,7 +104,7 @@ func two() {
 	log.Printf("Password: %d", password)
 }
 
-
+/*
 func main() {
 	if len(os.Args) < 2 {
 		return
@@ -118,3 +118,4 @@ func main() {
 	}
 
 }
+*/

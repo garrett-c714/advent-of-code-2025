@@ -1,0 +1,24 @@
+package main 
+
+import (
+	"os"
+
+	"advent-of-code-2025/one"
+)
+
+func main() {
+	if len(os.Args) < 3 {
+		return
+	}
+
+	switch os.Args[1] {
+	case "one":
+		switch os.Args[2] {
+		case "one":
+			one.One()
+		case "two":
+			one.Two()
+		}
+	}
+
+}
