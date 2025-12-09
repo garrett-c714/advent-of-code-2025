@@ -6,7 +6,7 @@ import (
 	"bufio"
 	"strings"
 	"strconv"
-	"sort"
+	"slices"
 )
 
 func getMax(nums []int) (index int, value int) {
@@ -75,7 +75,7 @@ func getOccurences(nums []int, tgt int, max int) []Occurrence {
 }
 
 func Two() {
-	file, err := os.Open("./three/day3-input.txt")
+	file, err := os.Open("./three/test.txt")
 	if err != nil {
 		log.Fatal("Could not open input file!")
 	}
@@ -96,30 +96,30 @@ func Two() {
 			batteries = append(batteries, intVal)
 		}
 
-		var enabledBats []Occurrence
-		target := 9
-		for len(enabledBats) < 12 {
-			log.Printf("Getting %d\n", target)
-			occurences := getOccurences(batteries, target, 
-				12 - len(enabledBats))
-			enabledBats = append(enabledBats, occurences...)
-			target -= 1
+
+		target := 1
+		for len(batteries) > 12 {
+			for i:=0; i < len(batteries); i++ {
+				if batteries[i] == target {
+					batteries = slices.Delete(batteries, i, i+1)
+					i -= 1
+				}
+				if len(batteries) == 12 {
+					break
+				}
+			}
+			target++
 		}
 
-		sort.Slice(enabledBats, func (i, j int) bool {
-			return enabledBats[i].Index < enabledBats[j].Index
-		})
-
-		var enabledString = ""
-		for _, occ := range enabledBats {
-			strJolt  := strconv.Itoa(occ.Value)
-			enabledString += strJolt
+		activeBats := ""
+		for _, val := range batteries {
+			activeBats += strconv.Itoa(val)
 		}
 
-		rowJoltage, _ := strconv.Atoi(enabledString)
-		log.Printf("Calculated Joltage: %s\n", enabledString)
-		//log.Printf("Length of calc-ed joltage: %d", len(enabledString))
-		joltage += rowJoltage
+		log.Printf("Calculated Joltage: %s\n", activeBats)
+		maxJoltage, _ := strconv.Atoi(activeBats)
+		joltage += maxJoltage
+
 	}
 
 	log.Printf("Max Joltage: %d", joltage)
