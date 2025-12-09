@@ -1,12 +1,12 @@
 package three
 
 import (
-	"os"
-	"log"
 	"bufio"
-	"strings"
+	"log"
+	"os"
 	"strconv"
-	"slices"
+	"strings"
+	//"slices"
 )
 
 func getMax(nums []int) (index int, value int) {
@@ -42,8 +42,8 @@ func One() {
 			batteries = append(batteries, intVal)
 		}
 
-		tensIdx, tens := getMax(batteries[:rowLen - 1])
-		_, ones := getMax(batteries[tensIdx + 1:])
+		tensIdx, tens := getMax(batteries[:rowLen-1])
+		_, ones := getMax(batteries[tensIdx+1:])
 
 		joltage += (10 * tens) + ones
 
@@ -63,7 +63,7 @@ type Occurrence struct {
 
 func getOccurences(nums []int, tgt int, max int) []Occurrence {
 	var ocs []Occurrence
-	for i:=len(nums) - 1; i >= 0; i-- {
+	for i := len(nums) - 1; i >= 0; i-- {
 		if len(ocs) == max {
 			break
 		}
@@ -75,7 +75,7 @@ func getOccurences(nums []int, tgt int, max int) []Occurrence {
 }
 
 func Two() {
-	file, err := os.Open("./three/test.txt")
+	file, err := os.Open("./three/day3-input.txt")
 	if err != nil {
 		log.Fatal("Could not open input file!")
 	}
@@ -96,27 +96,17 @@ func Two() {
 			batteries = append(batteries, intVal)
 		}
 
-
-		target := 1
-		for len(batteries) > 12 {
-			for i:=0; i < len(batteries); i++ {
-				if batteries[i] == target {
-					batteries = slices.Delete(batteries, i, i+1)
-					i -= 1
-				}
-				if len(batteries) == 12 {
-					break
-				}
-			}
-			target++
-		}
-
 		activeBats := ""
-		for _, val := range batteries {
-			activeBats += strconv.Itoa(val)
+		fwdIdx := -1
+		for range 12 {
+			idx, digit := getMax(
+				batteries[fwdIdx+1 : len(batteries) - (11 - len(activeBats))],
+			)
+			fwdIdx = fwdIdx + idx + 1
+			activeBats += strconv.Itoa(digit)
 		}
 
-		log.Printf("Calculated Joltage: %s\n", activeBats)
+		log.Printf("Bank Joltage: %s\n", activeBats)
 		maxJoltage, _ := strconv.Atoi(activeBats)
 		joltage += maxJoltage
 
@@ -125,4 +115,3 @@ func Two() {
 	log.Printf("Max Joltage: %d", joltage)
 
 }
-
