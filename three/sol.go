@@ -56,24 +56,6 @@ func One() {
 
 }
 
-type Occurrence struct {
-	Index int
-	Value int
-}
-
-func getOccurences(nums []int, tgt int, max int) []Occurrence {
-	var ocs []Occurrence
-	for i := len(nums) - 1; i >= 0; i-- {
-		if len(ocs) == max {
-			break
-		}
-		if nums[i] == tgt {
-			ocs = append(ocs, Occurrence{Index: i, Value: nums[i]})
-		}
-	}
-	return ocs
-}
-
 func Two() {
 	file, err := os.Open("./three/day3-input.txt")
 	if err != nil {
@@ -100,7 +82,7 @@ func Two() {
 		fwdIdx := -1
 		for range 12 {
 			idx, digit := getMax(
-				batteries[fwdIdx+1 : len(batteries) - (11 - len(activeBats))],
+				batteries[fwdIdx+1 : len(batteries)-(11-len(activeBats))],
 			)
 			fwdIdx = fwdIdx + idx + 1
 			activeBats += strconv.Itoa(digit)
