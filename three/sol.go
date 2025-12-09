@@ -63,19 +63,19 @@ type Occurrence struct {
 
 func getOccurences(nums []int, tgt int, max int) []Occurrence {
 	var ocs []Occurrence
-	for i, val := range nums {
+	for i:=len(nums) - 1; i >= 0; i-- {
 		if len(ocs) == max {
 			break
 		}
-		if val == tgt {
-			ocs = append(ocs, Occurrence{Index: i, Value: val})
+		if nums[i] == tgt {
+			ocs = append(ocs, Occurrence{Index: i, Value: nums[i]})
 		}
 	}
 	return ocs
 }
 
 func Two() {
-	file, err := os.Open("./three/test.txt")
+	file, err := os.Open("./three/day3-input.txt")
 	if err != nil {
 		log.Fatal("Could not open input file!")
 	}
