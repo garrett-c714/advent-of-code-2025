@@ -26,6 +26,8 @@ func main() {
 		switch os.Args[2] {
 		case "one":
 			two.One()
+		case "two":
+			two.Two()
 		}
 	case "three":
 		switch os.Args[2] {
