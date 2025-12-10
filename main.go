@@ -1,12 +1,12 @@
-package main 
+package main
 
 import (
 	"os"
 
-	"advent-of-code-2025/one"
-	"advent-of-code-2025/two"
-	"advent-of-code-2025/three"
 	"advent-of-code-2025/four"
+	"advent-of-code-2025/one"
+	"advent-of-code-2025/three"
+	"advent-of-code-2025/two"
 )
 
 func main() {
@@ -30,7 +30,7 @@ func main() {
 	case "three":
 		switch os.Args[2] {
 		case "one":
-			three.One()	
+			three.One()
 		case "two":
 			three.Two()
 		}
@@ -38,6 +38,8 @@ func main() {
 		switch os.Args[2] {
 		case "one":
 			four.One()
+		case "two":
+			four.Two()
 		}
 	}
 

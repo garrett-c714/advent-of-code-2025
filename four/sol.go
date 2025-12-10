@@ -96,3 +96,72 @@ func One() {
 
 }
 
+func doRemoval(state [][]string) (numRemoved int) {
+	adjacencies := make([][]int, len(state))
+	for i := range len(state) {
+		adjacencies[i] = make([]int, len(state[0]))
+	}
+
+	numRows := len(state)
+	rowLen := len(state[0])
+
+	for i, _ := range state {
+		for j, cell := range state[i] {
+			if cell == "@" {
+				incNeighbors(
+					adjacencies,
+					i,
+					j,
+					numRows-1,
+					rowLen-1,
+				)
+			}
+		}
+	}
+
+	numRolls := 0
+	for i, _ := range state {
+		for j, cell := range state[i] {
+			if cell == "@" && adjacencies[i][j] < 4 {
+				state[i][j] = "."
+				numRolls++
+			}
+		}
+	}
+
+	return numRolls
+}
+
+func Two() {
+	file, err := os.Open("./four/day4-input.txt")
+	if err != nil {
+		log.Fatal("Could not open input file!")
+	}
+
+	scanner := bufio.NewScanner(file)
+
+	var rowCells [][]string
+
+	for scanner.Scan() {
+		line := scanner.Text()
+
+		row := strings.Split(line, "")
+		rowCells = append(rowCells, row)
+
+	}
+	if scanner.Err(); err != nil {
+		log.Printf("Error scanning line in input: %s\n", err.Error())
+	}
+
+	removedRound := -1
+	removedTotal := 0
+	for removedRound != 0 {
+		removedRound = doRemoval(rowCells)
+		if removedRound > 0 {
+			removedTotal += removedRound
+		}
+	}
+
+	log.Printf("Total Number of Wrapping Paper Rolls: %d\n", removedTotal)
+}
+
