@@ -90,51 +90,47 @@ func Two() {
 
 		ranges = append(ranges, ends)
 	}
-
-	for i := range ranges {
-		log.Printf("[%s, %s]\n", ranges[i][0], ranges[i][1])
-	}
-
+	
 	answer := 0
-	for _, entry:= range ranges {
-		if len(entry[0]) == len(entry[1]) && len(entry[0]) % 2 == 1 {
-			continue
-		}
-		leftBound, _ := strconv.Atoi(entry[0])
-		rightBound, _ := strconv.Atoi(entry[1])
+	for _, entry := range ranges {
+		discovered := make(map[int]struct{})
 
-		leftLen := len(entry[0])
 		rightLen := len(entry[1])
-		for leftLen <= rightLen {
-			if leftLen % 2 == 1 {
-				for i:=1; i<10; i++ {
-					digit := strconv.Itoa(i)
-					numStr := strings.Repeat(digit, leftLen)
+
+		low, _ := strconv.Atoi(entry[0])
+		high, _ := strconv.Atoi(entry[1])
+
+		maxCheckLen := rightLen / 2
+
+		stringLen := 1
+		for stringLen <= maxCheckLen {
+			maxAppearances := rightLen / stringLen 
+
+			leftInt := math.Pow(10, float64(stringLen - 1))
+			rightInt := math.Pow(10, float64(stringLen))
+
+			for i:=leftInt; i < rightInt; i++ {
+				for j:=2;j<=maxAppearances;j++ {
+					buildingBlock := strconv.Itoa(int(i))
+					numStr := strings.Repeat(buildingBlock, j)
 					check, _ := strconv.Atoi(numStr)
-					if check >= leftBound && check <= rightBound {
-						answer += check
+					if check >= low && check <= high {
+						if _, exists := discovered[check]; !exists {
+							/*
+							log.Printf("Got a hit on %d in [%s, %s]\n",
+								check, entry[0], entry[1])
+							*/
+							answer += check
+							discovered[check] = struct{}{}
+						}
 					}
 				}
-
-				leftLen += 1
-				continue
-			}
-			half := leftLen / 2
-			leftInt := math.Pow(10, float64(half - 1))
-			rightInt := math.Pow(10, float64(half))
-
-			for i := leftInt; i < rightInt; i++ {
-				halfStr := strconv.Itoa(int(i))
-				check, _ := strconv.Atoi(halfStr + halfStr)
-				if check >= leftBound && check <= rightBound {
-					answer += check
-				}
 			}
 
-
-			leftLen += 1
+			stringLen++
 		}
 	}
+
 
 	log.Printf("Answer: %d", answer)
 
