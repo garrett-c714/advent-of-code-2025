@@ -6,38 +6,65 @@ import (
 	"bufio"
 	"strings"
 	"strconv"
+	"slices"
 )
 
-func checkRanges(idRanges [][]int, newRange []int) ([][]int) {
+func consolidateRanges(idRanges [][]int, newRange []int) ([][]int) {
 	// Try to consolidate
+	leftIn := -1
+	rightIn := -1
 	for i, curRange := range idRanges {
-		left := curRange[0]
-		right := curRange[1]
-
-		lIn := newRange[0] >= left && newRange[0] <= right
-		rIn := newRange[1] >= left && newRange[1] <= right
-
-		if lIn && rIn {
-			return idRanges
+		// Swallow
+		if newRange[0] <= curRange[0] && newRange[1] >= curRange[1] {
+			idRanges[i][0] = -1
+			idRanges[i][1] = -1
+			continue
 		}
 
-		if newRange[0] <= left && newRange[1] >= right {
-			idRanges[i] = []int{newRange[0], newRange[1]}
-			return idRanges
+		if newRange[0] >= curRange[0] && newRange[0] <= curRange[1] {
+			leftIn = i
 		}
 
-		if lIn && newRange[1] >= right {
-			idRanges[i] = []int{left, newRange[1]}
-			return idRanges
+		if newRange[1] >= curRange[0] && newRange[1] <= curRange[1] {
+			rightIn = i
 		}
 
-		if newRange[0] <= left && rIn {
-			idRanges[i] = []int{newRange[0], right}
+		// Is Swallowed
+		if leftIn >= 0 && rightIn >= 0 && leftIn == rightIn {
 			return idRanges
 		}
 	}
-	// else, append to array
-	return append(idRanges, newRange)
+
+	if rightIn >= 0 && leftIn >= 0 {
+		newLeft := idRanges[leftIn][0]
+		newRight := idRanges[rightIn][1]
+
+		higherIndex := max(leftIn, rightIn)
+		lowerIndex := min(leftIn, rightIn)
+
+		idRanges = slices.Delete(idRanges, higherIndex, higherIndex+1)
+		idRanges = slices.Delete(idRanges, lowerIndex, lowerIndex+1)
+
+		idRanges = append(idRanges, []int{newLeft, newRight})
+	} else if rightIn >= 0 {
+		idRanges[rightIn] = []int{newRange[0], idRanges[rightIn][1]}
+	} else if leftIn >= 0 {
+		idRanges[leftIn] = []int{idRanges[leftIn][0], newRange[1]}
+	} else {
+		idRanges = append(idRanges, newRange)
+	}
+
+	i := 0
+	for i < len(idRanges) {
+		if idRanges[i][0] == -1 && idRanges[i][1] == -1 {
+			idRanges = slices.Delete(idRanges, i, i+1)
+			continue
+		}
+
+		i++
+	}
+
+	return idRanges
 }
 
 func One() {
@@ -69,7 +96,7 @@ func One() {
 			if len(idRanges) == 0 {
 				idRanges = append(idRanges, idNums)
 			} else {
-				idRanges = checkRanges(idRanges, idNums)
+				idRanges = consolidateRanges(idRanges, idNums)
 			}
 		} else {
 			ingredientId, _ := strconv.Atoi(line)
@@ -85,7 +112,6 @@ func One() {
 		for _, idRange := range idRanges {
 			if ingredientId >= idRange[0] && ingredientId <= idRange[1] {
 				numFresh++
-				break
 			}
 		}
 	}
