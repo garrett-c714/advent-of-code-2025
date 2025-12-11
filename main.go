@@ -8,6 +8,7 @@ import (
 	"advent-of-code-2025/three"
 	"advent-of-code-2025/two"
 	"advent-of-code-2025/five"
+	"advent-of-code-2025/six"
 )
 
 func main() {
@@ -50,6 +51,11 @@ func main() {
 			five.One()
 		case "two":
 			five.Two()
+		}
+	case "six":
+		switch os.Args[2] {
+		case "one":
+			six.One()
 		}
 	}
 

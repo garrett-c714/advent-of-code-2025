@@ -1,0 +1,4 @@
+package six
+
+func One() {
+}
