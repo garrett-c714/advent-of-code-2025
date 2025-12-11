@@ -118,3 +118,52 @@ func One() {
 
 	log.Printf("Number of fresh ingredients: %d\n", numFresh)
 }
+
+func Two() {
+	file, err := os.Open("./five/day5-input.txt")
+	if err != nil {
+		log.Fatal("Could not open input file!")
+	}
+
+	scanner := bufio.NewScanner(file)
+
+	var idRanges [][]int
+	var ingredients []int
+
+	brk := false
+	for scanner.Scan() {
+		line := scanner.Text()
+
+		if line == "" {
+			brk = true
+			continue
+		}
+
+		if !brk {
+			ids := strings.Split(line, "-")
+			id1, _ := strconv.Atoi(ids[0])
+			id2, _ := strconv.Atoi(ids[1])
+			idNums := []int{id1, id2}
+
+			if len(idRanges) == 0 {
+				idRanges = append(idRanges, idNums)
+			} else {
+				idRanges = consolidateRanges(idRanges, idNums)
+			}
+		} else {
+			ingredientId, _ := strconv.Atoi(line)
+			ingredients = append(ingredients, ingredientId)
+		}
+	}
+	if err := scanner.Err(); err != nil {
+		log.Printf("Error scanning file line: %s\n", err.Error())
+	}
+
+	totalFreshIds := 0
+	for _, curRange := range idRanges {
+		totalFreshIds += (curRange[1] - curRange[0]) + 1
+	}
+
+	log.Printf("Total fresh IDs: %d\n", totalFreshIds)
+}
+

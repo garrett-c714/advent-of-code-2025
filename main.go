@@ -47,7 +47,9 @@ func main() {
 	case "five":
 		switch os.Args[2] {
 		case "one":
-		five.One()
+			five.One()
+		case "two":
+			five.Two()
 		}
 	}
 
